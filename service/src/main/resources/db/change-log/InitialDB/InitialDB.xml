@@ -14,4 +14,14 @@
 			</column>
 		</createTable>
 	</changeSet>
+	<changeSet author="rest-acf" id="initial-db-002">
+		<createTable tableName="StoragePlace">
+			<column name="Id" type="BIGINT">
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			<column name="Description" type="VARCHAR(100)">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>

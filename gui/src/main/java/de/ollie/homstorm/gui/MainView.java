@@ -22,13 +22,16 @@ import com.vaadin.flow.router.Route;
 public class MainView extends VerticalLayout {
 
 	private final ItemView itemView;
+	private final StoragePlaceView storagePlaceView;
 
-	public MainView(ItemView itemView) {
+	public MainView(ItemView itemView, StoragePlaceView storagePlaceView) {
 		super();
 		this.itemView = itemView;
+		this.storagePlaceView = storagePlaceView;
 		Accordion accordion = new Accordion();
 		accordion.setWidthFull();
 		accordion.add("Items", this.itemView);
+		accordion.add("StoragePlaces", this.storagePlaceView);
 		addClassName("centered-content");
 		add( //
 				accordion //

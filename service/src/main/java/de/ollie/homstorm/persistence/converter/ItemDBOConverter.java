@@ -10,7 +10,7 @@ import de.ollie.homstorm.service.so.ItemSO;
  *
  * @author rest-acf
  *
- *         GENERATED CODE!!! DO NOT CHANGE!!!
+ * GENERATED CODE!!! DO NOT CHANGE!!!
  */
 @Component
 public class ItemDBOConverter {

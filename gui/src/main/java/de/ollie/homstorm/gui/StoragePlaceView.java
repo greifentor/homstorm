@@ -13,9 +13,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
-import de.ollie.homstorm.service.ItemService;
+import de.ollie.homstorm.service.StoragePlaceService;
 import de.ollie.homstorm.service.persistence.exception.PersistenceException;
-import de.ollie.homstorm.service.so.ItemSO;
+import de.ollie.homstorm.service.so.StoragePlaceSO;
 
 /**
  * A view for item maintenance.
@@ -26,19 +26,19 @@ import de.ollie.homstorm.service.so.ItemSO;
 @Scope("session")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-public class ItemView extends VerticalLayout {
+public class StoragePlaceView extends VerticalLayout {
 
-	private final ItemService itemService;
+	private final StoragePlaceService storagePlaceService;
 
 	private Button buttonDelete = new Button("Delete");
 	private Button buttonSave = new Button("Save");
-	private Grid<ItemSO> gridItems = new Grid<>(10);
+	private Grid<StoragePlaceSO> gridItems = new Grid<>(10);
 	private TextField textFieldId = new TextField("Id");
 	private TextField textFieldDescription = new TextField("Description");
 
-	public ItemView(ItemService itemService) {
+	public StoragePlaceView(StoragePlaceService storagePlaceService) {
 		super();
-		this.itemService = itemService;
+		this.storagePlaceService = storagePlaceService;
 		getStyle().set("border", "1px solid LightGray");
 		buttonDelete.addClickListener(event -> deleteItem(gridItems.getSelectedItems()));
 		buttonDelete.setSizeFull();
@@ -62,13 +62,13 @@ public class ItemView extends VerticalLayout {
 	}
 
 	private void updateGrid() throws PersistenceException {
-		this.gridItems.setItems(this.itemService.findAll().getResults());
+		this.gridItems.setItems(this.storagePlaceService.findAll().getResults());
 	}
 
-	private void deleteItem(Set<ItemSO> items) {
+	private void deleteItem(Set<StoragePlaceSO> items) {
 		items.forEach(item -> {
 			try {
-				this.itemService.delete(item.getId());
+				this.storagePlaceService.delete(item.getId());
 				updateGrid();
 				cleanInput();
 			} catch (PersistenceException pe) {
@@ -84,7 +84,7 @@ public class ItemView extends VerticalLayout {
 
 	private void saveItem(String description, String id) {
 		try {
-			this.itemService.save(new ItemSO().setId(Long.parseLong(id)).setDescription(description));
+			this.storagePlaceService.save(new StoragePlaceSO().setId(Integer.parseInt(id)).setDescription(description));
 			updateGrid();
 			cleanInput();
 		} catch (PersistenceException pe) {
@@ -97,7 +97,7 @@ public class ItemView extends VerticalLayout {
 		}).open();
 	}
 
-	private void putToEditor(ItemSO item) {
+	private void putToEditor(StoragePlaceSO item) {
 		textFieldDescription.setValue(item.getDescription());
 		textFieldId.setValue("" + item.getId());
 	}
