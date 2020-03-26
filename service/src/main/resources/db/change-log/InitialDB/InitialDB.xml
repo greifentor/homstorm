@@ -15,6 +15,21 @@
 		</createTable>
 	</changeSet>
 	<changeSet author="rest-acf" id="initial-db-002">
+		<createTable tableName="Product">
+			<column name="Id" type="BIGINT">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="Item" type="BIGINT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="StoragePlace" type="BIGINT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="BestBeforeDate" type="UNKNOWN">
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="rest-acf" id="initial-db-003">
 		<createTable tableName="StoragePlace">
 			<column name="Id" type="BIGINT">
 				<constraints nullable="false" primaryKey="true"/>

@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * A ORM mapping and database access class for storageplaces.
+ * A ORM mapping and database access class for storage places.
  *
  * @author rest-acf
  *

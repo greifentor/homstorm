@@ -13,6 +13,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
+import de.ollie.homstorm.gui.events.Event;
+import de.ollie.homstorm.gui.events.EventProvider;
+import de.ollie.homstorm.gui.events.EventType;
 import de.ollie.homstorm.service.StoragePlaceService;
 import de.ollie.homstorm.service.persistence.exception.PersistenceException;
 import de.ollie.homstorm.service.so.StoragePlaceSO;
@@ -29,6 +32,7 @@ import de.ollie.homstorm.service.so.StoragePlaceSO;
 public class StoragePlaceView extends VerticalLayout {
 
 	private final StoragePlaceService storagePlaceService;
+	private final EventProvider eventProvider;
 
 	private Button buttonDelete = new Button("Delete");
 	private Button buttonSave = new Button("Save");
@@ -36,8 +40,9 @@ public class StoragePlaceView extends VerticalLayout {
 	private TextField textFieldId = new TextField("Id");
 	private TextField textFieldDescription = new TextField("Description");
 
-	public StoragePlaceView(StoragePlaceService storagePlaceService) {
+	public StoragePlaceView(EventProvider eventProvider, StoragePlaceService storagePlaceService) {
 		super();
+		this.eventProvider = eventProvider;
 		this.storagePlaceService = storagePlaceService;
 		getStyle().set("border", "1px solid LightGray");
 		buttonDelete.addClickListener(event -> deleteItem(gridItems.getSelectedItems()));
@@ -51,7 +56,6 @@ public class StoragePlaceView extends VerticalLayout {
 		textFieldId.setEnabled(false);
 		textFieldId.setValue("0");
 		textFieldId.setSizeFull();
-		addClassName("centered-content");
 		add( //
 				this.textFieldId, //
 				this.textFieldDescription, //
@@ -65,12 +69,13 @@ public class StoragePlaceView extends VerticalLayout {
 		this.gridItems.setItems(this.storagePlaceService.findAll().getResults());
 	}
 
-	private void deleteItem(Set<StoragePlaceSO> items) {
-		items.forEach(item -> {
+	private void deleteItem(Set<StoragePlaceSO> storagePlaces) {
+		storagePlaces.forEach(storagePlace -> {
 			try {
-				this.storagePlaceService.delete(item.getId());
+				this.storagePlaceService.delete(storagePlace.getId());
 				updateGrid();
 				cleanInput();
+				this.eventProvider.fireEvent(new Event(EventType.STORAGE_PLACE_UPDATE, storagePlace.getId()));
 			} catch (PersistenceException pe) {
 				showError(pe.getMessage());
 			}
@@ -87,6 +92,7 @@ public class StoragePlaceView extends VerticalLayout {
 			this.storagePlaceService.save(new StoragePlaceSO().setId(Integer.parseInt(id)).setDescription(description));
 			updateGrid();
 			cleanInput();
+			this.eventProvider.fireEvent(new Event(EventType.STORAGE_PLACE_UPDATE, Long.parseLong(id)));
 		} catch (PersistenceException pe) {
 			showError(pe.getMessage());
 		}

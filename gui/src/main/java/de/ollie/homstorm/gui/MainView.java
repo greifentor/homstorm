@@ -9,6 +9,11 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
+import de.ollie.homstorm.gui.events.Event;
+import de.ollie.homstorm.gui.events.EventListener;
+import de.ollie.homstorm.gui.events.EventProvider;
+import de.ollie.homstorm.gui.events.EventType;
+
 /**
  * The main view of the HOMe STORage Manager application.
  *
@@ -19,23 +24,42 @@ import com.vaadin.flow.router.Route;
 @Scope("session")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-public class MainView extends VerticalLayout {
+public class MainView extends VerticalLayout implements EventListener {
 
+	private final EventProvider eventProvider;
 	private final ItemView itemView;
+	private final LoginView loginView;
+	private final ProductView productView;
 	private final StoragePlaceView storagePlaceView;
 
-	public MainView(ItemView itemView, StoragePlaceView storagePlaceView) {
+	public MainView(EventProvider eventProvider, ItemView itemView, LoginView loginView, ProductView productView,
+			StoragePlaceView storagePlaceView) {
 		super();
+		this.eventProvider = eventProvider;
 		this.itemView = itemView;
+		this.loginView = loginView;
+		this.productView = productView;
 		this.storagePlaceView = storagePlaceView;
-		Accordion accordion = new Accordion();
-		accordion.setWidthFull();
-		accordion.add("Items", this.itemView);
-		accordion.add("StoragePlaces", this.storagePlaceView);
+		this.eventProvider.addListener(this);
 		addClassName("centered-content");
 		add( //
-				accordion //
+				this.loginView //
 		);
+	}
+
+	@Override
+	public void eventDetected(Event event) {
+		if (event.getType() == EventType.USER_ACCEPTED) {
+			removeAll();
+			Accordion accordion = new Accordion();
+			accordion.add("Products", this.productView);
+			accordion.add("Items", this.itemView);
+			accordion.add("StoragePlaces", this.storagePlaceView);
+			accordion.setWidthFull();
+			add( //
+					accordion //
+			);
+		}
 	}
 
 }

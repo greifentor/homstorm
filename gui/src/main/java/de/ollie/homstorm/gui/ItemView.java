@@ -13,6 +13,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
+import de.ollie.homstorm.gui.events.Event;
+import de.ollie.homstorm.gui.events.EventProvider;
+import de.ollie.homstorm.gui.events.EventType;
 import de.ollie.homstorm.service.ItemService;
 import de.ollie.homstorm.service.persistence.exception.PersistenceException;
 import de.ollie.homstorm.service.so.ItemSO;
@@ -29,6 +32,7 @@ import de.ollie.homstorm.service.so.ItemSO;
 public class ItemView extends VerticalLayout {
 
 	private final ItemService itemService;
+	private final EventProvider eventProvider;
 
 	private Button buttonDelete = new Button("Delete");
 	private Button buttonSave = new Button("Save");
@@ -36,8 +40,9 @@ public class ItemView extends VerticalLayout {
 	private TextField textFieldId = new TextField("Id");
 	private TextField textFieldDescription = new TextField("Description");
 
-	public ItemView(ItemService itemService) {
+	public ItemView(EventProvider eventProvider, ItemService itemService) {
 		super();
+		this.eventProvider = eventProvider;
 		this.itemService = itemService;
 		getStyle().set("border", "1px solid LightGray");
 		buttonDelete.addClickListener(event -> deleteItem(gridItems.getSelectedItems()));
@@ -71,6 +76,7 @@ public class ItemView extends VerticalLayout {
 				this.itemService.delete(item.getId());
 				updateGrid();
 				cleanInput();
+				this.eventProvider.fireEvent(new Event(EventType.ITEM_UPDATE, item.getId()));
 			} catch (PersistenceException pe) {
 				showError(pe.getMessage());
 			}
@@ -87,6 +93,7 @@ public class ItemView extends VerticalLayout {
 			this.itemService.save(new ItemSO().setId(Long.parseLong(id)).setDescription(description));
 			updateGrid();
 			cleanInput();
+			this.eventProvider.fireEvent(new Event(EventType.ITEM_UPDATE, Long.parseLong(id)));
 		} catch (PersistenceException pe) {
 			showError(pe.getMessage());
 		}
