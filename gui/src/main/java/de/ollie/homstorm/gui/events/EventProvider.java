@@ -13,9 +13,6 @@ import javax.inject.Named;
 @Named
 public class EventProvider {
 
-	private static long instance = 0;
-
-	private long id = ++instance;
 	private List<EventListener> listeners = new ArrayList<>();
 
 	public EventProvider() {
@@ -29,7 +26,7 @@ public class EventProvider {
 	}
 
 	public void fireEvent(Event event) {
-		this.listeners.forEach(l -> {
+		new ArrayList<>(this.listeners).forEach(l -> {
 			try {
 				l.eventDetected(event);
 			} catch (Exception e) {

@@ -2,10 +2,6 @@ package de.ollie.homstorm.gui;
 
 import java.util.Set;
 
-import javax.inject.Named;
-
-import org.springframework.context.annotation.Scope;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -25,8 +21,6 @@ import de.ollie.homstorm.service.so.StoragePlaceSO;
  *
  * @author ollie (19.03.2020)
  */
-@Named
-@Scope("session")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class StoragePlaceView extends VerticalLayout {

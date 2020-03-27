@@ -1,9 +1,5 @@
 package de.ollie.homstorm.gui;
 
-import javax.inject.Named;
-
-import org.springframework.context.annotation.Scope;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,8 +15,6 @@ import de.ollie.homstorm.service.UserService;
  *
  * @author ollie (26.03.2020)
  */
-@Named
-@Scope("session")
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class LoginView extends VerticalLayout {
