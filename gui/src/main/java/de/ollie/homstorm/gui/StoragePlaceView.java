@@ -30,7 +30,7 @@ public class StoragePlaceView extends VerticalLayout {
 
 	private Button buttonDelete = new Button("Delete");
 	private Button buttonSave = new Button("Save");
-	private Grid<StoragePlaceSO> gridItems = new Grid<>(10);
+	private Grid<StoragePlaceSO> gridStoragePlaces = new Grid<>(10);
 	private TextField textFieldId = new TextField("Id");
 	private TextField textFieldDescription = new TextField("Description");
 
@@ -39,13 +39,13 @@ public class StoragePlaceView extends VerticalLayout {
 		this.eventProvider = eventProvider;
 		this.storagePlaceService = storagePlaceService;
 		getStyle().set("border", "1px solid LightGray");
-		buttonDelete.addClickListener(event -> deleteItem(gridItems.getSelectedItems()));
+		buttonDelete.addClickListener(event -> deleteItem(gridStoragePlaces.getSelectedItems()));
 		buttonDelete.setSizeFull();
 		buttonSave.addClickListener(event -> saveItem(textFieldDescription.getValue(), textFieldId.getValue()));
 		buttonSave.setSizeFull();
-		gridItems.addColumn(item -> item.getDescription() + " (" + item.getId() + ")").setHeader("Item");
-		gridItems.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
-		gridItems.setWidthFull();
+		gridStoragePlaces.addColumn(item -> item.getDescription()).setHeader("Item");
+		gridStoragePlaces.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
+		gridStoragePlaces.setWidthFull();
 		textFieldDescription.setSizeFull();
 		textFieldId.setEnabled(false);
 		textFieldId.setValue("0");
@@ -55,12 +55,17 @@ public class StoragePlaceView extends VerticalLayout {
 				this.textFieldDescription, //
 				this.buttonSave, //
 				this.buttonDelete, //
-				this.gridItems //
+				this.gridStoragePlaces //
 		);
+		try {
+			updateGrid();
+		} catch (PersistenceException pe) {
+			System.out.println(pe.getMessage());
+		}
 	}
 
 	private void updateGrid() throws PersistenceException {
-		this.gridItems.setItems(this.storagePlaceService.findAll().getResults());
+		this.gridStoragePlaces.setItems(this.storagePlaceService.findAll().getResults());
 	}
 
 	private void deleteItem(Set<StoragePlaceSO> storagePlaces) {

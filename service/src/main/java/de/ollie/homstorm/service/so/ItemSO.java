@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
  *
  * @author rest-acf
  *
- * GENERATED CODE!!! DO NOT CHANGE!!!
+ *         GENERATED CODE!!! DO NOT CHANGE!!!
  */
 @Accessors(chain = true)
 @Data
@@ -16,5 +16,6 @@ public class ItemSO {
 
 	private long id;
 	private String description;
+	private Integer messageDaysBeforeBestBeforeDate;
 
 }

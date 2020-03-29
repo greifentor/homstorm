@@ -10,6 +10,7 @@ import de.ollie.homstorm.gui.events.Event;
 import de.ollie.homstorm.gui.events.EventListener;
 import de.ollie.homstorm.gui.events.EventProvider;
 import de.ollie.homstorm.gui.events.EventType;
+import de.ollie.homstorm.service.BestBeforeDateService;
 import de.ollie.homstorm.service.ItemService;
 import de.ollie.homstorm.service.ProductService;
 import de.ollie.homstorm.service.StoragePlaceService;
@@ -26,14 +27,16 @@ import de.ollie.homstorm.service.UserService;
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class MainView extends VerticalLayout implements EventListener {
 
+	private final BestBeforeDateService bestBeforeDataService;
 	private final EventProvider eventProvider;
 	private final ItemService itemService;
 	private final ProductService productService;
 	private final StoragePlaceService storagePlaceService;
 
-	public MainView(EventProvider eventProvider, ItemService itemService, ProductService productService,
-			StoragePlaceService storagePlaceService, UserService userService) {
+	public MainView(BestBeforeDateService bestBeforeDataService, EventProvider eventProvider, ItemService itemService,
+			ProductService productService, StoragePlaceService storagePlaceService, UserService userService) {
 		super();
+		this.bestBeforeDataService = bestBeforeDataService;
 		this.eventProvider = eventProvider;
 		this.itemService = itemService;
 		this.productService = productService;
@@ -55,6 +58,7 @@ public class MainView extends VerticalLayout implements EventListener {
 					this.storagePlaceService));
 			accordion.add("Items", new ItemView(this.eventProvider, this.itemService));
 			accordion.add("StoragePlaces", new StoragePlaceView(this.eventProvider, this.storagePlaceService));
+			accordion.add("Warnings", new BestBeforeWarningView(this.eventProvider, this.bestBeforeDataService));
 			accordion.setWidthFull();
 			add( //
 					accordion //

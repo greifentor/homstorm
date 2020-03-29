@@ -19,14 +19,14 @@ public class ItemDBOConverter {
 		if (dbo == null) {
 			return null;
 		}
-		return new ItemSO().setId(dbo.getId()).setDescription(dbo.getDescription());
+		return new ItemSO().setId(dbo.getId()).setDescription(dbo.getDescription()).setMessageDaysBeforeBestBeforeDate(dbo.getMessageDaysBeforeBestBeforeDate());
 	}
 
 	public ItemDBO convertSOToDBO(ItemSO so) {
 		if (so == null) {
 			return null;
 		}
-		return new ItemDBO().setId(so.getId()).setDescription(so.getDescription());
+		return new ItemDBO().setId(so.getId()).setDescription(so.getDescription()).setMessageDaysBeforeBestBeforeDate(so.getMessageDaysBeforeBestBeforeDate());
 	}
 
 }

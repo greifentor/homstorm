@@ -7,6 +7,7 @@ import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
 import de.ollie.homstorm.gui.events.Event;
@@ -31,6 +32,7 @@ public class ItemView extends VerticalLayout {
 	private Button buttonDelete = new Button("Delete");
 	private Button buttonSave = new Button("Save");
 	private Grid<ItemSO> gridItems = new Grid<>(10);
+	private NumberField numberFieldMessageDaysBefore = new NumberField("Message Days Before");
 	private TextField textFieldId = new TextField("Id");
 	private TextField textFieldDescription = new TextField("Description");
 
@@ -43,9 +45,13 @@ public class ItemView extends VerticalLayout {
 		buttonDelete.setSizeFull();
 		buttonSave.addClickListener(event -> saveItem(textFieldDescription.getValue(), textFieldId.getValue()));
 		buttonSave.setSizeFull();
-		gridItems.addColumn(item -> item.getDescription() + " (" + item.getId() + ")").setHeader("Item");
+		gridItems.addColumn(item -> item.getDescription()).setHeader("Item");
 		gridItems.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
 		gridItems.setWidthFull();
+		numberFieldMessageDaysBefore.setSizeFull();
+		numberFieldMessageDaysBefore.setMin(0);
+		numberFieldMessageDaysBefore.setStep(1.0D);
+		numberFieldMessageDaysBefore.setValue(7.0D);
 		textFieldDescription.setSizeFull();
 		textFieldId.setEnabled(false);
 		textFieldId.setValue("0");
@@ -54,10 +60,16 @@ public class ItemView extends VerticalLayout {
 		add( //
 				this.textFieldId, //
 				this.textFieldDescription, //
+				this.numberFieldMessageDaysBefore, //
 				this.buttonSave, //
 				this.buttonDelete, //
 				this.gridItems //
 		);
+		try {
+			updateGrid();
+		} catch (PersistenceException pe) {
+			System.out.println(pe.getMessage());
+		}
 	}
 
 	private void updateGrid() throws PersistenceException {
@@ -78,13 +90,17 @@ public class ItemView extends VerticalLayout {
 	}
 
 	private void cleanInput() {
+		numberFieldMessageDaysBefore.setValue(7.0D);
 		textFieldDescription.setValue("");
 		textFieldId.setValue("0");
 	}
 
 	private void saveItem(String description, String id) {
 		try {
-			this.itemService.save(new ItemSO().setId(Long.parseLong(id)).setDescription(description));
+			this.itemService.save(new ItemSO() //
+					.setId(Long.parseLong(id)) //
+					.setDescription(description)
+					.setMessageDaysBeforeBestBeforeDate(numberFieldMessageDaysBefore.getValue().intValue()));
 			updateGrid();
 			cleanInput();
 			this.eventProvider.fireEvent(new Event(EventType.ITEM_UPDATE, Long.parseLong(id)));
@@ -99,6 +115,7 @@ public class ItemView extends VerticalLayout {
 	}
 
 	private void putToEditor(ItemSO item) {
+		numberFieldMessageDaysBefore.setValue(item.getMessageDaysBeforeBestBeforeDate().doubleValue());
 		textFieldDescription.setValue(item.getDescription());
 		textFieldId.setValue("" + item.getId());
 	}

@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * A ORM mapping and database access class for storage places.
+ * A ORM mapping and database access class for storageplaces.
  *
  * @author rest-acf
  *
@@ -20,14 +20,14 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 @Entity(name = "StoragePlace")
-@Table(name = "StoragePlace")
+@Table(name = "STORAGE_PLACE")
 public class StoragePlaceDBO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "storagePlaceIds")
-	@Column(name = "Id")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "STORAGE_PLACE_IDS")
+	@Column(name = "ID")
 	private long id;
-	@Column(name = "Description")
+	@Column(name = "DESCRIPTION")
 	private String description;
 
 }

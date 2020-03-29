@@ -20,14 +20,16 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 @Entity(name = "Item")
-@Table(name = "Item")
+@Table(name = "ITEM")
 public class ItemDBO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "itemIds")
-	@Column(name = "Id")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ITEM_IDS")
+	@Column(name = "ID")
 	private long id;
-	@Column(name = "Description")
+	@Column(name = "DESCRIPTION")
 	private String description;
+	@Column(name = "MESSAGE_DAYS_BEFORE_BEST_BEFORE_DATE")
+	private Integer messageDaysBeforeBestBeforeDate;
 
 }

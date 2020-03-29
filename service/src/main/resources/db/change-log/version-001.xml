@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+				http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+	<changeSet author="OlLie" id="initial-db-001">
+		<createTable tableName="ITEM">
+			<column name="ID" type="BIGINT" autoIncrement="true" >
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			<column name="DESCRIPTION" type="VARCHAR(100)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="MESSAGE_DAYS_BEFORE_BEST_BEFORE_DATE" type="INT">
+			</column>
+		</createTable>
+    </changeSet>
+	<changeSet author="OlLie" id="initial-db-002">
+		<createTable tableName="PRODUCT">
+			<column name="ID" type="BIGINT">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="ITEM" type="BIGINT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="STORAGE_PLACE" type="BIGINT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="BEST_BEFORE_DATE" type="DATE">
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="OlLie" id="initial-db-003">
+		<createTable tableName="STORAGE_PLACE">
+			<column name="ID" type="BIGINT">
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			<column name="DESCRIPTION" type="VARCHAR(100)">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="OlLie" id="initial-db-004">
+	    <addForeignKeyConstraint baseColumnNames="ITEM"
+            baseTableName="PRODUCT"
+            constraintName="FK_PRODUCT_ITEM_TO_ITEM_ID"
+            referencedColumnNames="ID"
+            referencedTableName="ITEM"/>
+	</changeSet>
+	<changeSet author="OlLie" id="initial-db-005">
+	    <addForeignKeyConstraint baseColumnNames="STORAGE_PLACE"
+            baseTableName="PRODUCT"
+            constraintName="FK_PRODUCT_STORAGE_PLACE_TO_STORAGE_PLACE_ID"
+            referencedColumnNames="ID"
+            referencedTableName="STORAGE_PLACE"/>
+	</changeSet>
+</databaseChangeLog>

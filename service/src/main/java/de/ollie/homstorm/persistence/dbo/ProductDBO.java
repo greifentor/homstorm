@@ -24,20 +24,20 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 @Entity(name = "Product")
-@Table(name = "Product")
+@Table(name = "PRODUCT")
 public class ProductDBO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "productIds")
-	@Column(name = "Id")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "PRODUCT_IDS")
+	@Column(name = "ID")
 	private Long id;
 	@ManyToOne
-	@JoinColumn(name = "Item", referencedColumnName = "Id")
+	@JoinColumn(name = "ITEM", referencedColumnName = "ID")
 	private ItemDBO item;
 	@ManyToOne
-	@JoinColumn(name = "StoragePlace", referencedColumnName = "Id")
+	@JoinColumn(name = "STORAGE_PLACE", referencedColumnName = "ID")
 	private StoragePlaceDBO storagePlace;
-	@Column(name = "BestBeforeDate")
+	@Column(name = "BEST_BEFORE_DATE")
 	private LocalDate bestBeforeDate;
 
 }

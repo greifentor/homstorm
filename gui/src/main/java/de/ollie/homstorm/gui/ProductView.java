@@ -17,6 +17,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import de.ollie.homstorm.gui.events.Event;
 import de.ollie.homstorm.gui.events.EventListener;
 import de.ollie.homstorm.gui.events.EventProvider;
+import de.ollie.homstorm.gui.events.EventType;
 import de.ollie.homstorm.service.ItemService;
 import de.ollie.homstorm.service.ProductService;
 import de.ollie.homstorm.service.StoragePlaceService;
@@ -42,7 +43,7 @@ public class ProductView extends VerticalLayout implements EventListener {
 	private Button buttonDelete = new Button("Delete");
 	private Button buttonSave = new Button("Save");
 	private DatePicker datePickerBestBeforeDate = new DatePicker("Best Before Date");
-	private Grid<ProductSO> gridItems = new Grid<>(10);
+	private Grid<ProductSO> gridProducts = new Grid<>(10);
 	private TextField textFieldId = new TextField("Id");
 	private ComboBox<ItemSO> comboBoxItem = new ComboBox<>(10);
 	private ComboBox<StoragePlaceSO> comboBoxStoragePlace = new ComboBox<>(10);
@@ -56,17 +57,18 @@ public class ProductView extends VerticalLayout implements EventListener {
 		this.storagePlaceService = storagePlaceService;
 		this.eventProvider.addListener(this);
 		getStyle().set("border", "1px solid LightGray");
-		buttonDelete.addClickListener(event -> deleteItem(gridItems.getSelectedItems()));
+		buttonDelete.addClickListener(event -> deleteItem(gridProducts.getSelectedItems()));
 		buttonDelete.setSizeFull();
 		buttonSave.addClickListener(event -> saveItem(comboBoxItem.getValue(), comboBoxStoragePlace.getValue(),
 				datePickerBestBeforeDate.getValue(), textFieldId.getValue()));
 		buttonSave.setSizeFull();
 		datePickerBestBeforeDate.setValue(LocalDate.now());
 		datePickerBestBeforeDate.setWidthFull();
-		gridItems.addColumn(product -> product.getItem().getDescription() + " (" + product.getItem().getId() + ")")
-				.setHeader("Product");
-		gridItems.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
-		gridItems.setWidthFull();
+		gridProducts.addColumn(product -> product.getItem().getDescription()).setHeader("Item");
+		gridProducts.addColumn(product -> product.getStoragePlace().getDescription()).setHeader("Storage Place");
+		gridProducts.addColumn(ProductSO::getBestBeforeDate).setHeader("Best Before Date");
+		gridProducts.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
+		gridProducts.setWidthFull();
 		comboBoxItem.setItems(new ArrayList<>());
 		comboBoxItem.setItemLabelGenerator(ItemSO::getDescription);
 		comboBoxItem.setLabel("Item");
@@ -86,20 +88,26 @@ public class ProductView extends VerticalLayout implements EventListener {
 				this.datePickerBestBeforeDate, //
 				this.buttonSave, //
 				this.buttonDelete, //
-				this.gridItems //
+				this.gridProducts //
 		);
+		try {
+			updateGrid();
+		} catch (PersistenceException pe) {
+			System.out.println(pe.getMessage());
+		}
 	}
 
 	private void updateGrid() throws PersistenceException {
-		this.gridItems.setItems(this.productService.findAll().getResults());
+		this.gridProducts.setItems(this.productService.findAll().getResults());
 	}
 
-	private void deleteItem(Set<ProductSO> items) {
-		items.forEach(item -> {
+	private void deleteItem(Set<ProductSO> products) {
+		products.forEach(product -> {
 			try {
-				this.productService.delete(item.getId());
+				this.productService.delete(product.getId());
 				updateGrid();
 				cleanInput();
+				this.eventProvider.fireEvent(new Event(EventType.PRODUCT_UPDATE, product.getId()));
 			} catch (PersistenceException pe) {
 				showError(pe.getMessage());
 			}
@@ -110,7 +118,7 @@ public class ProductView extends VerticalLayout implements EventListener {
 		textFieldId.setValue("0");
 		comboBoxItem.clear();
 		comboBoxStoragePlace.clear();
-		datePickerBestBeforeDate.clear();
+		datePickerBestBeforeDate.setValue(LocalDate.now());
 	}
 
 	private void saveItem(ItemSO item, StoragePlaceSO storagePlace, LocalDate bestBeforeDate, String id) {
@@ -120,6 +128,7 @@ public class ProductView extends VerticalLayout implements EventListener {
 					.setBestBeforeDate(bestBeforeDate) //
 					.setItem(item) //
 					.setStoragePlace(storagePlace));
+			this.eventProvider.fireEvent(new Event(EventType.PRODUCT_UPDATE, Long.parseLong(id)));
 			updateGrid();
 			cleanInput();
 		} catch (PersistenceException pe) {

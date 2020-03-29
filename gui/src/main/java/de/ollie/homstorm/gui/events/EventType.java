@@ -8,6 +8,7 @@ package de.ollie.homstorm.gui.events;
 public enum EventType {
 
 	ITEM_UPDATE, //
+	PRODUCT_UPDATE, //
 	STORAGE_PLACE_UPDATE, //
 	USER_ACCEPTED;
 
