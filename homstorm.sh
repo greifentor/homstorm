@@ -1,0 +1,1 @@
+java -Dhomstorm.password=krang -Dspring.datasource.url=jdbc:hsqldb:file:~/db/homstorm/homstorm-db -jar gui/target/homstorm-gui-1.0.jar
