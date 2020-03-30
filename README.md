@@ -16,7 +16,8 @@ Just clone the project and run `mvn clean install` on  shell.
 ## Run
 
 After successful building the software start the application by:
-`java -Dhomstorm.password=krang -Dspring.datasource.url=jdbc:hsqldb:file:~/db/homstorm/homstorm-db -jar gui/target/homstorm-gui-1.0.jar`
+
+`java -jar gui/target/homstorm-gui-1.0.jar`
 
 This starts the application in a demo mode with a memory database and the password `ncc1701`.
 
