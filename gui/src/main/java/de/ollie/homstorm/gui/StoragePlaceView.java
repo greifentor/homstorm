@@ -43,7 +43,7 @@ public class StoragePlaceView extends VerticalLayout {
 		buttonDelete.setSizeFull();
 		buttonSave.addClickListener(event -> saveItem(textFieldDescription.getValue(), textFieldId.getValue()));
 		buttonSave.setSizeFull();
-		gridStoragePlaces.addColumn(item -> item.getDescription()).setHeader("Item");
+		gridStoragePlaces.addColumn(StoragePlaceSO::getDescription).setHeader("Item");
 		gridStoragePlaces.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
 		gridStoragePlaces.setWidthFull();
 		textFieldDescription.setSizeFull();
