@@ -1,5 +1,9 @@
 package de.ollie.homstorm.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,6 +20,7 @@ import de.ollie.homstorm.service.ItemService;
 import de.ollie.homstorm.service.ProductService;
 import de.ollie.homstorm.service.StoragePlaceService;
 import de.ollie.homstorm.service.UserService;
+import de.ollie.homstorm.service.persistence.exception.PersistenceException;
 
 /**
  * The main view of the HOMe STORage Manager application.
@@ -55,13 +60,27 @@ public class MainView extends VerticalLayout implements EventListener {
 	public void eventDetected(Event event) {
 		if (event.getType() == EventType.USER_ACCEPTED) {
 			removeAll();
-			Accordion accordion = new Accordion();
-			accordion.add("Products", new ProductView(this.eventProvider, this.itemService, this.productService,
+			List<Component> view = new ArrayList<>();
+			view.add(new ProductView(this.eventProvider, this.itemService, this.productService,
 					this.storagePlaceService));
-			accordion.add("Items", new ItemView(this.eventProvider, this.itemService));
-			accordion.add("StoragePlaces", new StoragePlaceView(this.eventProvider, this.storagePlaceService));
-			accordion.add("Warnings", new BestBeforeWarningView(this.eventProvider, this.bestBeforeDataService));
+			view.add(new ItemView(this.eventProvider, this.itemService));
+			view.add(new StoragePlaceView(this.eventProvider, this.storagePlaceService));
+			view.add(new BestBeforeWarningView(this.eventProvider, this.bestBeforeDataService));
+			Accordion accordion = new Accordion();
+			accordion.add("Products", view.get(0));
+			accordion.add("Items", view.get(1));
+			accordion.add("StoragePlaces", view.get(2));
+			accordion.add("Warnings", view.get(3));
 			accordion.setWidthFull();
+			accordion.addOpenedChangeListener(e -> e.getOpenedIndex().ifPresent(i -> {
+				if (view.get(i) instanceof UpdatableView) {
+					try {
+						((UpdatableView) view.get(i)).updateView();
+					} catch (PersistenceException pe) {
+						System.out.println(pe.getMessage());
+					}
+				}
+			}));
 			add( //
 					accordion //
 			);

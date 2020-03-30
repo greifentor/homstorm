@@ -38,10 +38,10 @@ public class BestBeforeWarningView extends VerticalLayout implements EventListen
 		add( //
 				gridProductWarnings //
 		);
-		updateGrid();
+		updateView();
 	}
 
-	private void updateGrid() {
+	private void updateView() {
 		try {
 			this.gridProductWarnings.setItems( //
 					this.bestBeforeDateService.getProductWarnings(LocalDate.now()) //
@@ -56,7 +56,7 @@ public class BestBeforeWarningView extends VerticalLayout implements EventListen
 
 	@Override
 	public void eventDetected(Event event) {
-		updateGrid();
+		updateView();
 	}
 
 }

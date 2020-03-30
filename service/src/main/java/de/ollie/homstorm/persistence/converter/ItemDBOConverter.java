@@ -19,7 +19,10 @@ public class ItemDBOConverter {
 		if (dbo == null) {
 			return null;
 		}
-		return new ItemSO().setId(dbo.getId()).setDescription(dbo.getDescription()).setMeals(dbo.getMeals())
+		return new ItemSO() //
+				.setId(dbo.getId()) //
+				.setDescription(dbo.getDescription()) //
+				.setMeals(dbo.getMeals()) //
 				.setMessageDaysBeforeBestBeforeDate(dbo.getMessageDaysBeforeBestBeforeDate());
 	}
 
@@ -27,7 +30,10 @@ public class ItemDBOConverter {
 		if (so == null) {
 			return null;
 		}
-		return new ItemDBO().setId(so.getId()).setDescription(so.getDescription()).setMeals(so.getMeals())
+		return new ItemDBO() //
+				.setId(so.getId()) //
+				.setDescription(so.getDescription()) //
+				.setMeals(so.getMeals()) //
 				.setMessageDaysBeforeBestBeforeDate(so.getMessageDaysBeforeBestBeforeDate());
 	}
 

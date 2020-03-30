@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -11,6 +12,7 @@ import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -33,7 +35,7 @@ import de.ollie.homstorm.service.so.StoragePlaceSO;
  */
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-public class ProductView extends VerticalLayout implements EventListener {
+public class ProductView extends VerticalLayout implements EventListener, UpdatableView {
 
 	private final EventProvider eventProvider;
 	private final ItemService itemService;
@@ -42,6 +44,7 @@ public class ProductView extends VerticalLayout implements EventListener {
 
 	private Button buttonDelete = new Button("Delete");
 	private Button buttonSave = new Button("Save");
+	private Column<ProductSO> mealsColumn = null;
 	private DatePicker datePickerBestBeforeDate = new DatePicker("Best Before Date");
 	private Grid<ProductSO> gridProducts = new Grid<>(10);
 	private TextField textFieldId = new TextField("Id");
@@ -66,6 +69,7 @@ public class ProductView extends VerticalLayout implements EventListener {
 		datePickerBestBeforeDate.setWidthFull();
 		gridProducts.addColumn(product -> product.getItem().getDescription()).setHeader("Item");
 		gridProducts.addColumn(product -> product.getStoragePlace().getDescription()).setHeader("Storage Place");
+		mealsColumn = gridProducts.addColumn(product -> product.getItem().getMeals()).setHeader("Meals");
 		gridProducts.addColumn(ProductSO::getBestBeforeDate).setHeader("Best Before Date");
 		gridProducts.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
 		gridProducts.setWidthFull();
@@ -90,26 +94,30 @@ public class ProductView extends VerticalLayout implements EventListener {
 				this.gridProducts //
 		);
 		try {
-			updateGrid();
+			updateView();
 		} catch (PersistenceException pe) {
 			System.out.println(pe.getMessage());
 		}
 	}
 
-	private void updateGrid() throws PersistenceException {
-		this.gridProducts.setItems( //
-				this.productService.findAll().getResults() //
-						.stream() //
-						.sorted((product0, product1) -> product0.getItem().getDescription()
-								.compareToIgnoreCase(product1.getItem().getDescription())) //
-		);
+	public void updateView() throws PersistenceException {
+		List<ProductSO> products = this.productService.findAll().getResults() //
+				.stream() //
+				.sorted((product0, product1) -> product0.getItem().getDescription()
+						.compareToIgnoreCase(product1.getItem().getDescription())) //
+				.collect(Collectors.toList()) //
+		;
+		this.gridProducts.setItems(products);
+		double meals = products.stream().mapToDouble(product -> product.getItem().getMeals()).sum();
+		this.gridProducts.setItems(products);
+		mealsColumn.setHeader("Meals (" + meals + ")");
 	}
 
 	private void deleteItem(Set<ProductSO> products) {
 		products.forEach(product -> {
 			try {
 				this.productService.delete(product.getId());
-				updateGrid();
+				updateView();
 				cleanInput();
 				this.eventProvider.fireEvent(new Event(EventType.PRODUCT_UPDATE, product.getId()));
 			} catch (PersistenceException pe) {
@@ -133,7 +141,7 @@ public class ProductView extends VerticalLayout implements EventListener {
 					.setItem(item) //
 					.setStoragePlace(storagePlace));
 			this.eventProvider.fireEvent(new Event(EventType.PRODUCT_UPDATE, Long.parseLong(id)));
-			updateGrid();
+			updateView();
 			cleanInput();
 		} catch (PersistenceException pe) {
 			showError(pe.getMessage());

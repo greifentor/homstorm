@@ -23,7 +23,7 @@ import de.ollie.homstorm.service.so.StoragePlaceSO;
  */
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-public class StoragePlaceView extends VerticalLayout {
+public class StoragePlaceView extends VerticalLayout implements UpdatableView {
 
 	private final StoragePlaceService storagePlaceService;
 	private final EventProvider eventProvider;
@@ -58,13 +58,13 @@ public class StoragePlaceView extends VerticalLayout {
 				this.gridStoragePlaces //
 		);
 		try {
-			updateGrid();
+			updateView();
 		} catch (PersistenceException pe) {
 			System.out.println(pe.getMessage());
 		}
 	}
 
-	private void updateGrid() throws PersistenceException {
+	public void updateView() throws PersistenceException {
 		this.gridStoragePlaces.setItems( //
 				this.storagePlaceService.findAll().getResults() //
 						.stream() //
@@ -77,7 +77,7 @@ public class StoragePlaceView extends VerticalLayout {
 		storagePlaces.forEach(storagePlace -> {
 			try {
 				this.storagePlaceService.delete(storagePlace.getId());
-				updateGrid();
+				updateView();
 				cleanInput();
 				this.eventProvider.fireEvent(new Event(EventType.STORAGE_PLACE_UPDATE, storagePlace.getId()));
 			} catch (PersistenceException pe) {
@@ -94,7 +94,7 @@ public class StoragePlaceView extends VerticalLayout {
 	private void saveItem(String description, String id) {
 		try {
 			this.storagePlaceService.save(new StoragePlaceSO().setId(Integer.parseInt(id)).setDescription(description));
-			updateGrid();
+			updateView();
 			cleanInput();
 			this.eventProvider.fireEvent(new Event(EventType.STORAGE_PLACE_UPDATE, Long.parseLong(id)));
 		} catch (PersistenceException pe) {

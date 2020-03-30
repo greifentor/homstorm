@@ -1,11 +1,14 @@
 package de.ollie.homstorm.gui;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -24,13 +27,14 @@ import de.ollie.homstorm.service.so.ItemSO;
  */
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-public class ItemView extends VerticalLayout {
+public class ItemView extends VerticalLayout implements UpdatableView {
 
 	private final ItemService itemService;
 	private final EventProvider eventProvider;
 
 	private Button buttonDelete = new Button("Delete");
 	private Button buttonSave = new Button("Save");
+	private Column<ItemSO> mealsColumn = null;
 	private Grid<ItemSO> gridItems = new Grid<>(10);
 	private NumberField numberFieldMeals = new NumberField("Meals");
 	private NumberField numberFieldMessageDaysBefore = new NumberField("Message Days Before");
@@ -47,12 +51,9 @@ public class ItemView extends VerticalLayout {
 		buttonSave.addClickListener(event -> saveItem(textFieldDescription.getValue(), textFieldId.getValue()));
 		buttonSave.setSizeFull();
 		gridItems.addColumn(ItemSO::getDescription).setHeader("Item");
+		mealsColumn = gridItems.addColumn(ItemSO::getMeals).setHeader("Meals");
 		gridItems.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
 		gridItems.setWidthFull();
-		numberFieldMeals.setSizeFull();
-		numberFieldMeals.setMin(0);
-		numberFieldMeals.setStep(0.5D);
-		numberFieldMeals.setValue(1.0D);
 		numberFieldMessageDaysBefore.setSizeFull();
 		numberFieldMessageDaysBefore.setMin(0);
 		numberFieldMessageDaysBefore.setStep(1.0D);
@@ -71,25 +72,26 @@ public class ItemView extends VerticalLayout {
 				this.gridItems //
 		);
 		try {
-			updateGrid();
+			updateView();
 		} catch (PersistenceException pe) {
 			System.out.println(pe.getMessage());
 		}
 	}
 
-	private void updateGrid() throws PersistenceException {
-		this.gridItems.setItems( //
-				this.itemService.findAll().getResults() //
-						.stream() //
-						.sorted((item0, item1) -> item0.getDescription().compareToIgnoreCase(item1.getDescription())) //
-		);
+	public void updateView() throws PersistenceException {
+		List<ItemSO> items = this.itemService.findAll().getResults() //
+				.stream() //
+				.sorted((item0, item1) -> item0.getDescription().compareToIgnoreCase(item1.getDescription())) //
+				.collect(Collectors.toList()) //
+		;
+		this.gridItems.setItems(items);
 	}
 
 	private void deleteItem(Set<ItemSO> items) {
 		items.forEach(item -> {
 			try {
 				this.itemService.delete(item.getId());
-				updateGrid();
+				updateView();
 				cleanInput();
 				this.eventProvider.fireEvent(new Event(EventType.ITEM_UPDATE, item.getId()));
 			} catch (PersistenceException pe) {
@@ -109,9 +111,10 @@ public class ItemView extends VerticalLayout {
 		try {
 			this.itemService.save(new ItemSO() //
 					.setId(Long.parseLong(id)) //
-					.setDescription(description)
+					.setDescription(description) //
+					.setMeals(numberFieldMeals.getValue()) //
 					.setMessageDaysBeforeBestBeforeDate(numberFieldMessageDaysBefore.getValue().intValue()));
-			updateGrid();
+			updateView();
 			cleanInput();
 			this.eventProvider.fireEvent(new Event(EventType.ITEM_UPDATE, Long.parseLong(id)));
 		} catch (PersistenceException pe) {
