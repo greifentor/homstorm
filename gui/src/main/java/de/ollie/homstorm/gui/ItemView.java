@@ -45,7 +45,7 @@ public class ItemView extends VerticalLayout {
 		buttonDelete.setSizeFull();
 		buttonSave.addClickListener(event -> saveItem(textFieldDescription.getValue(), textFieldId.getValue()));
 		buttonSave.setSizeFull();
-		gridItems.addColumn(item -> item.getDescription()).setHeader("Item");
+		gridItems.addColumn(ItemSO::getDescription).setHeader("Item");
 		gridItems.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
 		gridItems.setWidthFull();
 		numberFieldMessageDaysBefore.setSizeFull();
@@ -73,7 +73,11 @@ public class ItemView extends VerticalLayout {
 	}
 
 	private void updateGrid() throws PersistenceException {
-		this.gridItems.setItems(this.itemService.findAll().getResults());
+		this.gridItems.setItems( //
+				this.itemService.findAll().getResults() //
+						.stream() //
+						.sorted((item0, item1) -> item0.getDescription().compareToIgnoreCase(item1.getDescription())) //
+		);
 	}
 
 	private void deleteItem(Set<ItemSO> items) {

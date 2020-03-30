@@ -98,7 +98,12 @@ public class ProductView extends VerticalLayout implements EventListener {
 	}
 
 	private void updateGrid() throws PersistenceException {
-		this.gridProducts.setItems(this.productService.findAll().getResults());
+		this.gridProducts.setItems( //
+				this.productService.findAll().getResults() //
+						.stream() //
+						.sorted((product0, product1) -> product0.getItem().getDescription()
+								.compareToIgnoreCase(product1.getItem().getDescription())) //
+		);
 	}
 
 	private void deleteItem(Set<ProductSO> products) {

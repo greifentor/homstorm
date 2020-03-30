@@ -65,7 +65,12 @@ public class StoragePlaceView extends VerticalLayout {
 	}
 
 	private void updateGrid() throws PersistenceException {
-		this.gridStoragePlaces.setItems(this.storagePlaceService.findAll().getResults());
+		this.gridStoragePlaces.setItems( //
+				this.storagePlaceService.findAll().getResults() //
+						.stream() //
+						.sorted((storagePlace0, storagePlace1) -> storagePlace0.getDescription()
+								.compareToIgnoreCase(storagePlace1.getDescription())) //
+		);
 	}
 
 	private void deleteItem(Set<StoragePlaceSO> storagePlaces) {
