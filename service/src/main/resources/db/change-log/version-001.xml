@@ -12,11 +12,19 @@
 			<column name="DESCRIPTION" type="VARCHAR(100)">
 				<constraints nullable="false"/>
 			</column>
+			<column name="MEALS" type="NUMERIC(10,1)" defaultValue="1.0">
+			</column>
 			<column name="MESSAGE_DAYS_BEFORE_BEST_BEFORE_DATE" type="INT">
 			</column>
 		</createTable>
-    </changeSet>
+	</changeSet>
 	<changeSet author="OlLie" id="initial-db-002">
+		<createSequence 
+            incrementBy="1"
+            sequenceName="ITEM_IDS"
+            startValue="10"/>
+    </changeSet>
+	<changeSet author="OlLie" id="initial-db-003">
 		<createTable tableName="PRODUCT">
 			<column name="ID" type="BIGINT">
 				<constraints primaryKey="true"/>
@@ -31,7 +39,13 @@
 			</column>
 		</createTable>
 	</changeSet>
-	<changeSet author="OlLie" id="initial-db-003">
+	<changeSet author="OlLie" id="initial-db-004">
+		<createSequence 
+            incrementBy="1"
+            sequenceName="PRODUCT_IDS"
+            startValue="10"/>
+	</changeSet>
+	<changeSet author="OlLie" id="initial-db-005">
 		<createTable tableName="STORAGE_PLACE">
 			<column name="ID" type="BIGINT">
 				<constraints nullable="false" primaryKey="true"/>
@@ -41,14 +55,20 @@
 			</column>
 		</createTable>
 	</changeSet>
-	<changeSet author="OlLie" id="initial-db-004">
+	<changeSet author="OlLie" id="initial-db-006">
+		<createSequence 
+            incrementBy="1"
+            sequenceName="STORAGE_PLACE_IDS"
+            startValue="10"/>
+	</changeSet>
+	<changeSet author="OlLie" id="initial-db-007">
 	    <addForeignKeyConstraint baseColumnNames="ITEM"
             baseTableName="PRODUCT"
             constraintName="FK_PRODUCT_ITEM_TO_ITEM_ID"
             referencedColumnNames="ID"
             referencedTableName="ITEM"/>
 	</changeSet>
-	<changeSet author="OlLie" id="initial-db-005">
+	<changeSet author="OlLie" id="initial-db-008">
 	    <addForeignKeyConstraint baseColumnNames="STORAGE_PLACE"
             baseTableName="PRODUCT"
             constraintName="FK_PRODUCT_STORAGE_PLACE_TO_STORAGE_PLACE_ID"
