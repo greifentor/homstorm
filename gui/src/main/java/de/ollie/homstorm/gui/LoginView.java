@@ -1,5 +1,6 @@
 package de.ollie.homstorm.gui;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -32,6 +33,8 @@ public class LoginView extends VerticalLayout {
 		getStyle().set("border", "1px solid LightGray");
 		buttonLogin.addClickListener(event -> checkLogin("user", passwordFieldPassword.getValue()));
 		buttonLogin.setSizeFull();
+		passwordFieldPassword.addKeyPressListener(Key.ENTER,
+				event -> checkLogin("user", passwordFieldPassword.getValue()));
 		passwordFieldPassword.focus();
 		passwordFieldPassword.setSizeFull();
 		add( //
