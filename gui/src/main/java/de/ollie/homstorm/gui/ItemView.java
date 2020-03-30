@@ -56,7 +56,6 @@ public class ItemView extends VerticalLayout {
 		textFieldId.setEnabled(false);
 		textFieldId.setValue("0");
 		textFieldId.setSizeFull();
-		addClassName("centered-content");
 		add( //
 				this.textFieldId, //
 				this.textFieldDescription, //

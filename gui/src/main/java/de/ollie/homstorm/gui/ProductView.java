@@ -80,7 +80,6 @@ public class ProductView extends VerticalLayout implements EventListener {
 		textFieldId.setEnabled(false);
 		textFieldId.setValue("0");
 		textFieldId.setSizeFull();
-		addClassName("centered-content");
 		add( //
 				this.textFieldId, //
 				this.comboBoxItem, //

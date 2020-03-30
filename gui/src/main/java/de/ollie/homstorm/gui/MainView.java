@@ -43,7 +43,7 @@ public class MainView extends VerticalLayout implements EventListener {
 		this.storagePlaceService = storagePlaceService;
 		this.eventProvider.addListener(this);
 		LoginView loginView = new LoginView(eventProvider, userService);
-		addClassName("centered-content");
+		// addClassName("centered-content");
 		add( //
 				loginView //
 		);
