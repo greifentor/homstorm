@@ -10,7 +10,7 @@ import de.ollie.homstorm.service.so.ItemSO;
  *
  * @author rest-acf
  *
- * GENERATED CODE!!! DO NOT CHANGE!!!
+ *         GENERATED CODE!!! DO NOT CHANGE!!!
  */
 @Component
 public class ItemDBOConverter {
@@ -19,14 +19,16 @@ public class ItemDBOConverter {
 		if (dbo == null) {
 			return null;
 		}
-		return new ItemSO().setId(dbo.getId()).setDescription(dbo.getDescription()).setMessageDaysBeforeBestBeforeDate(dbo.getMessageDaysBeforeBestBeforeDate());
+		return new ItemSO().setId(dbo.getId()).setDescription(dbo.getDescription()).setMeals(dbo.getMeals())
+				.setMessageDaysBeforeBestBeforeDate(dbo.getMessageDaysBeforeBestBeforeDate());
 	}
 
 	public ItemDBO convertSOToDBO(ItemSO so) {
 		if (so == null) {
 			return null;
 		}
-		return new ItemDBO().setId(so.getId()).setDescription(so.getDescription()).setMessageDaysBeforeBestBeforeDate(so.getMessageDaysBeforeBestBeforeDate());
+		return new ItemDBO().setId(so.getId()).setDescription(so.getDescription()).setMeals(so.getMeals())
+				.setMessageDaysBeforeBestBeforeDate(so.getMessageDaysBeforeBestBeforeDate());
 	}
 
 }

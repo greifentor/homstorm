@@ -29,6 +29,8 @@ public class ItemDBO {
 	private long id;
 	@Column(name = "DESCRIPTION")
 	private String description;
+	@Column(name = "MEALS")
+	private Double meals = 1.0D;
 	@Column(name = "MESSAGE_DAYS_BEFORE_BEST_BEFORE_DATE")
 	private Integer messageDaysBeforeBestBeforeDate;
 

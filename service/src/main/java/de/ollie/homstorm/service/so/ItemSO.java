@@ -16,6 +16,7 @@ public class ItemSO {
 
 	private long id;
 	private String description;
+	private Double meals;
 	private Integer messageDaysBeforeBestBeforeDate;
 
 }

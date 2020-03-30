@@ -32,6 +32,7 @@ public class ItemView extends VerticalLayout {
 	private Button buttonDelete = new Button("Delete");
 	private Button buttonSave = new Button("Save");
 	private Grid<ItemSO> gridItems = new Grid<>(10);
+	private NumberField numberFieldMeals = new NumberField("Meals");
 	private NumberField numberFieldMessageDaysBefore = new NumberField("Message Days Before");
 	private TextField textFieldId = new TextField("Id");
 	private TextField textFieldDescription = new TextField("Description");
@@ -48,6 +49,10 @@ public class ItemView extends VerticalLayout {
 		gridItems.addColumn(ItemSO::getDescription).setHeader("Item");
 		gridItems.addItemDoubleClickListener(event -> putToEditor(event.getItem()));
 		gridItems.setWidthFull();
+		numberFieldMeals.setSizeFull();
+		numberFieldMeals.setMin(0);
+		numberFieldMeals.setStep(0.5D);
+		numberFieldMeals.setValue(1.0D);
 		numberFieldMessageDaysBefore.setSizeFull();
 		numberFieldMessageDaysBefore.setMin(0);
 		numberFieldMessageDaysBefore.setStep(1.0D);
@@ -60,6 +65,7 @@ public class ItemView extends VerticalLayout {
 				this.textFieldId, //
 				this.textFieldDescription, //
 				this.numberFieldMessageDaysBefore, //
+				this.numberFieldMeals, //
 				this.buttonSave, //
 				this.buttonDelete, //
 				this.gridItems //
@@ -93,6 +99,7 @@ public class ItemView extends VerticalLayout {
 	}
 
 	private void cleanInput() {
+		numberFieldMeals.setValue(1.0D);
 		numberFieldMessageDaysBefore.setValue(7.0D);
 		textFieldDescription.setValue("");
 		textFieldId.setValue("0");
@@ -118,6 +125,7 @@ public class ItemView extends VerticalLayout {
 	}
 
 	private void putToEditor(ItemSO item) {
+		numberFieldMeals.setValue(item.getMeals());
 		numberFieldMessageDaysBefore.setValue(item.getMessageDaysBeforeBestBeforeDate().doubleValue());
 		textFieldDescription.setValue(item.getDescription());
 		textFieldId.setValue("" + item.getId());
