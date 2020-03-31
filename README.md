@@ -28,5 +28,4 @@ To have vital application set another password via property `homstorm.password` 
 
 * Merge the automatic pull request.
 * Message days before best before in item table.
-* Warning count in accordion header.
-* Sort combo boxes alphabetically.
+* Localization.
