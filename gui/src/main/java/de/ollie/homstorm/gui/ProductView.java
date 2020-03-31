@@ -111,6 +111,8 @@ public class ProductView extends VerticalLayout implements EventListener, Updata
 		double meals = products.stream().mapToDouble(product -> product.getItem().getMeals()).sum();
 		this.gridProducts.setItems(products);
 		mealsColumn.setHeader("Meals (" + meals + ")");
+		this.comboBoxItem.setItems(getItems());
+		this.comboBoxStoragePlace.setItems(getStoragePlaces());
 	}
 
 	private void deleteItem(Set<ProductSO> products) {
@@ -168,7 +170,11 @@ public class ProductView extends VerticalLayout implements EventListener, Updata
 
 	private List<ItemSO> getItems() {
 		try {
-			return this.itemService.findAll().getResults();
+			return this.itemService.findAll().getResults() //
+					.stream() //
+					.sorted((item0, item1) -> item0.getDescription().compareToIgnoreCase(item1.getDescription())) //
+					.collect(Collectors.toList()) //
+			;
 		} catch (PersistenceException pe) {
 			System.out.println(pe.getMessage());
 		}
@@ -177,7 +183,12 @@ public class ProductView extends VerticalLayout implements EventListener, Updata
 
 	private List<StoragePlaceSO> getStoragePlaces() {
 		try {
-			return this.storagePlaceService.findAll().getResults();
+			return this.storagePlaceService.findAll().getResults() //
+					.stream() //
+					.sorted((storagePlace0, storagePlace1) -> storagePlace0.getDescription()
+							.compareToIgnoreCase(storagePlace1.getDescription())) //
+					.collect(Collectors.toList()) //
+			;
 		} catch (PersistenceException pe) {
 			System.out.println(pe.getMessage());
 		}
