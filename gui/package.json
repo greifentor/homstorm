@@ -50,7 +50,7 @@
   "devDependencies": {
     "webpack": "4.30.0",
     "webpack-cli": "3.3.10",
-    "webpack-dev-server": "3.9.0",
+    "webpack-dev-server": "3.11.3",
     "webpack-babel-multi-target-plugin": "2.3.3",
     "copy-webpack-plugin": "5.1.0",
     "webpack-merge": "4.2.2",
@@ -120,7 +120,7 @@
       "awesome-typescript-loader": "5.2.1",
       "typescript": "3.7.3",
       "webpack-merge": "4.2.2",
-      "webpack-dev-server": "3.9.0"
+      "webpack-dev-server": "3.11.3"
     },
     "hash": "a5bf2a6668f23328d345469b6ac6845411359e5d72371a5d5201d5eb664c0d13"
   }
